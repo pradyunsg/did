@@ -39,3 +39,22 @@ def test_get_last_period():
         date(2020, 1, 1),
         date(2020, 12, 31),
     )
+
+
+def test_convert_to_range():
+    assert did.convert_to_range("jan-2020") == (
+        date(2020, 1, 1),
+        date(2020, 1, 31)
+    )
+    assert did.convert_to_range("feb-2020") == (
+        date(2020, 2, 1),
+        date(2020, 2, 29)
+    )
+    assert did.convert_to_range("feb-2021") == (
+        date(2021, 2, 1),
+        date(2021, 2, 28)
+    )
+    assert did.convert_to_range("nov-2020") == (
+        date(2020, 11, 1),
+        date(2020, 11, 30)
+    )

@@ -29,6 +29,7 @@ _GH_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 GH_TOKEN = os.environ["GH_TOKEN"]
 CACHE = httpx_cache.FileCache()
+MONTHS_TO_NUMBER = {month.lower(): index for index, month in enumerate(calendar.month_abbr) if month}
 
 
 def days(n: int) -> timedelta:
@@ -90,6 +91,18 @@ def get_last_period(today: date, period: Period) -> Tuple[str, date, date]:
         assert False
 
     return period_ref, start_date, end_date
+
+
+def convert_to_range(period: str) -> Tuple[date, date]:
+    month_s, _, year_s = period.partition("-")
+    assert month_s in MONTHS_TO_NUMBER, f"expected a month name from {list(MONTHS_TO_NUMBER)}"
+    assert year_s.isnumeric(), "expected a number"
+
+    month = MONTHS_TO_NUMBER[month_s]
+    year = int(year_s)
+    _, month_days_count = calendar.monthrange(year=year, month=month)
+
+    return date(year, month, 1), date(year, month, month_days_count)
 
 
 def discourse(since: date, until: date, *, host: str) -> None:
@@ -367,6 +380,7 @@ async def github(since: date, until: date):
                 raise NotImplementedError(json.dumps(event, indent=2))
         else:
             print("Oh no! GitHub's event history ran out. :(")
+            print()
 
 
 def main(*, since: date, until: date) -> None:
@@ -456,6 +470,16 @@ def on_(on: datetime):
 
     print(f"# Log items for {date_.strftime('%-d %B %Y')}")
     main(since=date_, until=date_)
+
+
+@did.command("in")
+@click.argument("period", metavar="date", type=str)
+def on_(period: str):
+    """stats for given date"""
+    since, until = convert_to_range(period)
+
+    print(f"# Log items for {period.capitalize()} ({since} to {until})")
+    main(since=since, until=until)
 
 
 if __name__ == "__main__":
