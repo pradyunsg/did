@@ -373,6 +373,7 @@ def main(*, since: date, until: date) -> None:
     print()
     asyncio.run(github(since, until))
     local_git_projects(since, until, directory=os.path.expanduser("~/Developer"))
+    local_git_projects(since, until, directory=os.path.expanduser("~/Developer/github"))
     discourse(since, until, host="discuss.python.org")
 
 
