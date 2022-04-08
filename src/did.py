@@ -253,7 +253,7 @@ async def github(since: date, until: date):
             event_type = event["type"]
             # Determine date for the event
             if event_type == "CommitCommentEvent":
-                raise NotImplementedError(event)
+                date_string = event["payload"]["comment"]["updated_at"]
             elif event_type == "CreateEvent":
                 date_string = event["created_at"]
             elif event_type == "DeleteEvent":
@@ -294,7 +294,8 @@ async def github(since: date, until: date):
             repository = event["repo"]["name"]
             prefix = f"- {event_date} {repository}: "
             if event_type == "CommitCommentEvent":
-                raise NotImplementedError(event)
+                comment_url = event["payload"]["comment"]["html_url"]
+                print(f"{prefix}Commented on a commit ({comment_url})")
             elif event_type == "CreateEvent":
                 ref_type = event["payload"]["ref_type"]
                 ref_name = event["payload"]["ref"]
@@ -318,6 +319,7 @@ async def github(since: date, until: date):
             elif event_type == "PublicEvent":
                 raise NotImplementedError(event)
             elif event_type == "PullRequestEvent":
+                action = event["payload"]["action"]
                 pr_url = event["payload"]["pull_request"]["html_url"]
                 pr_title = event["payload"]["pull_request"]["title"]
                 print(f"{prefix}{action.capitalize()} {pr_title} ({pr_url})")
