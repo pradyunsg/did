@@ -10,6 +10,7 @@ __version__ = "0.1.0"
 
 import asyncio
 import calendar
+import json
 import os
 import subprocess
 from collections import defaultdict
@@ -282,7 +283,7 @@ async def github(since: date, until: date):
             elif event_type == "IssuesEvent":
                 date_string = event["payload"]["issue"]["updated_at"]
             elif event_type == "PublicEvent":
-                raise NotImplementedError(event)
+                raise NotImplementedError(json.dumps(event, indent=2))
             elif event_type == "PullRequestEvent":
                 date_string = event["created_at"]
             elif event_type == "PullRequestReviewEvent":
@@ -292,9 +293,9 @@ async def github(since: date, until: date):
             elif event_type == "PushEvent":
                 date_string = event["created_at"]
             elif event_type == "ReleaseEvent":
-                raise NotImplementedError(event)
+                raise NotImplementedError(json.dumps(event, indent=2))
             elif event_type == "SponsorshipEvent":
-                raise NotImplementedError(event)
+                raise NotImplementedError(json.dumps(event, indent=2))
             else:
                 print(f"<!-- ignoring {event_type} -->")
                 continue
@@ -334,7 +335,7 @@ async def github(since: date, until: date):
                 issue_title = event["payload"]["issue"]["title"]
                 print(f"{prefix}{action.capitalize()} {issue_title} ({issue_url})")
             elif event_type == "PublicEvent":
-                raise NotImplementedError(event)
+                raise NotImplementedError(json.dumps(event, indent=2))
             elif event_type == "PullRequestEvent":
                 action = event["payload"]["action"]
                 pr_url = event["payload"]["pull_request"]["html_url"]
@@ -353,11 +354,11 @@ async def github(since: date, until: date):
                 n = event["payload"]["distinct_size"]
                 print(f"{prefix}Pushed {n} size to {ref}")
             elif event_type == "ReleaseEvent":
-                raise NotImplementedError(event)
+                raise NotImplementedError(json.dumps(event, indent=2))
             elif event_type == "SponsorshipEvent":
-                raise NotImplementedError(event)
+                raise NotImplementedError(json.dumps(event, indent=2))
             else:
-                raise NotImplementedError(event)
+                raise NotImplementedError(json.dumps(event, indent=2))
         else:
             print("Oh no! GitHub's event history ran out. :(")
 
