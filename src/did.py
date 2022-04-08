@@ -412,7 +412,7 @@ def yesterday_():
     """stats for previous day"""
     yesterday = date.today() - days(1)
 
-    print(f"# Status report for {yesterday}")
+    print(f"# Log items for {yesterday}")
     main(since=yesterday, until=yesterday)
 
 
@@ -421,7 +421,7 @@ def today_():
     """stats for current day"""
     today = date.today()
 
-    print(f"# Status report for {today}*")
+    print(f"# Log items for {today}*")
     main(since=today, until=today)
 
 
@@ -437,7 +437,7 @@ def month_(month: datetime):
     _, month_days_count = calendar.monthrange(year=start.year, month=start.month)
     end = start + days(month_days_count - 1)
 
-    print(f"# Status report for {start.strftime('%B %Y')} ({start} to {end})")
+    print(f"# Log items for {start.strftime('%B %Y')} ({start} to {end})")
     main(since=start, until=end)
 
 
@@ -447,7 +447,7 @@ def on_(on: datetime):
     """stats for given date"""
     date_ = on.date()
 
-    print(f"# Status report for {date_.strftime('%-d %B %Y')}")
+    print(f"# Log items for {date_.strftime('%-d %B %Y')}")
     main(since=date_, until=date_)
 
 
