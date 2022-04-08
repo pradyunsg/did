@@ -245,8 +245,25 @@ async def github(since: date, until: date):
             oauth_token=GH_TOKEN,
         )
 
+        # Various Searches
+        for heading, term in searches.items():
+            print(f"### {heading}")
+            print()
+            item = None
+            async for item in gh.getiter("/search/issues?q={q}", dict(q=term)):
+                print("-", item["title"], "--", item["html_url"])
+            if item is None:
+                print("Nothing.")
+            print()
+        print()
+
         print("### All events (reverse chronological)")
         print()
+        if (date.today() - until) > timedelta(days=90):
+            print("GitHub's event history does not go this far back.")
+            print()
+            return
+
         async for event in gh.getiter(
             "/users/{username}/events", {"username": "pradyunsg"}
         ):
@@ -342,20 +359,7 @@ async def github(since: date, until: date):
             else:
                 raise NotImplementedError(event)
         else:
-            print()
             print("Oh no! GitHub's event history ran out. :(")
-            print()
-
-        # Searches
-        for heading, term in searches.items():
-            print(f"### {heading}")
-            print()
-            item = None
-            async for item in gh.getiter("/search/issues?q={q}", dict(q=term)):
-                print("-", item["title"], "--", item["html_url"])
-            if item is None:
-                print("Nothing.")
-            print()
 
 
 def main(*, since: date, until: date) -> None:
