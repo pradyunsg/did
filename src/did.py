@@ -190,6 +190,7 @@ def local_git_projects(since: date, until: date, *, directory: str) -> None:
     print("## Local Repositories")
     print()
 
+    did_something = False
     for item in Path(directory).iterdir():
         if not (item / ".git").exists():
             continue
@@ -204,10 +205,15 @@ def local_git_projects(since: date, until: date, *, directory: str) -> None:
             print("-->")
             print()
         if process.stdout:
+            did_something = True
             print(f"### {item.name}")
             print()
             print(process.stdout)
             print()
+
+    if not did_something:
+        print("Nothing.")
+        print()
 
 
 async def github(since: date, until: date):
