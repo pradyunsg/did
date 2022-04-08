@@ -16,7 +16,7 @@ dependencies = [
   "click",
   "gidgethub",
   "httpx",
-  "pydiscourse",
+  "httpx_cache",
 ]
 
 license = { file = "LICENSE"}
