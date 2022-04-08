@@ -379,10 +379,13 @@ def did():
 @click.argument("until", metavar="until", type=click.DateTime([_DATE_FORMAT]))
 def between(since: datetime, until: datetime):
     """stats between two provided dates"""
-    if since.date() < until.date():
-        raise click.UsageError("'since' must be a date before 'until'.")
+    if since.date() >= until.date():
+        raise click.UsageError(
+            "'since' must be a date before 'until'.\n"
+            f"{since.date()!r} >= {until.date()!r}"
+        )
 
-    main(since=since, until=until)
+    main(since=since.date(), until=until.date())
 
 
 @did.command()
