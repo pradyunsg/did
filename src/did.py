@@ -19,13 +19,15 @@ from typing import Literal, Tuple
 
 import click
 import gidgethub.httpx
-import httpx
+import httpx_cache
 
 Period = Literal["week", "month", "quarter", "year"]
 _DATE_FORMAT = "%Y-%m-%d"
 _DISCOURSE_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 _GH_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
 GH_TOKEN = os.environ["GH_TOKEN"]
+CACHE = httpx_cache.FileCache()
 
 
 def days(n: int) -> timedelta:
@@ -101,9 +103,11 @@ def discourse(since: date, until: date, *, host: str) -> None:
 
     def get_bounded_user_actions():
         offset = 0
+        client = httpx_cache.Client(cache=CACHE, headers={"cache-control": "max-age=604800"})
         while True:
             print(f"<!-- offset: {offset} -->")
-            response = httpx.get(
+            response = client.request(
+                "GET",
                 f"https://{host}/user_actions.json",
                 params={
                     "offset": offset,
@@ -234,7 +238,7 @@ async def github(since: date, until: date):
     #     "SponsorshipEvent",
     # }
 
-    async with httpx.AsyncClient() as client:
+    async with httpx_cache.AsyncClient(cache=CACHE) as client:
         gh = gidgethub.httpx.GitHubAPI(
             client,
             "pradyunsg",
