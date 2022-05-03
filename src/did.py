@@ -312,7 +312,7 @@ async def github(since: date, until: date):
             elif event_type == "PushEvent":
                 date_string = event["created_at"]
             elif event_type == "ReleaseEvent":
-                raise NotImplementedError(json.dumps(event, indent=2))
+                date_string = event["created_at"]
             elif event_type == "SponsorshipEvent":
                 raise NotImplementedError(json.dumps(event, indent=2))
             else:
@@ -373,7 +373,9 @@ async def github(since: date, until: date):
                 n = event["payload"]["distinct_size"]
                 print(f"{prefix}Pushed {n} size to {ref}")
             elif event_type == "ReleaseEvent":
-                raise NotImplementedError(json.dumps(event, indent=2))
+                action = event["payload"]["action"]
+                tag_name = event["payload"]["release"]["tag_name"]
+                print(f"{prefix}Release {action}: {tag_name}")
             elif event_type == "SponsorshipEvent":
                 raise NotImplementedError(json.dumps(event, indent=2))
             else:
