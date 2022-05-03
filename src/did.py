@@ -203,7 +203,7 @@ def local_git_projects(since: date, until: date, *, directory: str) -> None:
         "--format=format:- %h%Cblue%d%Creset %s",
         "--author=Pradyun",
         f"--since={since} 00:00:00",
-        f"--until={until} 00:00:00",
+        f"--until={until} 23:59:59",
     ]
 
     print("## Local Repositories")
