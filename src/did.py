@@ -29,7 +29,9 @@ _GH_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 GH_TOKEN = os.environ["GH_TOKEN"]
 CACHE = httpx_cache.FileCache()
-MONTHS_TO_NUMBER = {month.lower(): index for index, month in enumerate(calendar.month_abbr) if month}
+MONTHS_TO_NUMBER = {
+    month.lower(): index for index, month in enumerate(calendar.month_abbr) if month
+}
 
 
 def days(n: int) -> timedelta:
@@ -95,7 +97,9 @@ def get_last_period(today: date, period: Period) -> Tuple[str, date, date]:
 
 def convert_to_range(period: str) -> Tuple[date, date]:
     month_s, _, year_s = period.partition("-")
-    assert month_s in MONTHS_TO_NUMBER, f"expected a month name from {list(MONTHS_TO_NUMBER)}"
+    assert (
+        month_s in MONTHS_TO_NUMBER
+    ), f"expected a month name from {list(MONTHS_TO_NUMBER)}"
     assert year_s.isnumeric(), "expected a number"
 
     month = MONTHS_TO_NUMBER[month_s]
@@ -117,7 +121,9 @@ def discourse(since: date, until: date, *, host: str) -> None:
 
     def get_bounded_user_actions():
         offset = 0
-        client = httpx_cache.Client(cache=CACHE, headers={"cache-control": "max-age=604800"})
+        client = httpx_cache.Client(
+            cache=CACHE, headers={"cache-control": "max-age=604800"}
+        )
         while True:
             print(f"<!-- offset: {offset} -->")
             response = client.request(
