@@ -210,8 +210,15 @@ def local_git_projects(since: date, until: date, *, directory: str) -> None:
     command = [
         "git",
         "log",
+        "--all",
         "--format=format:- %h%Cblue%d%Creset %s",
         "--author=Pradyun",
+        "--author=Pradyun Gedam",
+        "--author=mail@pradyunsg.me",
+        "--author=oss@pradyunsg.me",
+        "--author=pgedam@bloomberg.net",
+        "--author=pradyunsg@users.noreply.github.com",
+        "--author=pradyunsg@gmail.com",
         f"--since={since} 00:00:00",
         f"--until={until} 23:59:59",
     ]
