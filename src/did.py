@@ -13,30 +13,46 @@ import calendar
 import json
 import os
 import subprocess
+import sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Literal, Tuple
 
 import click
+import gidgethub
 import gidgethub.httpx
+import httpx
 import httpx_cache
+import rich.traceback
 
 Period = Literal["week", "month", "quarter", "year"]
 _DATE_FORMAT = "%Y-%m-%d"
 _DISCOURSE_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 _GH_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+_TOKEN_FILE = Path(os.environ["HOME"]) / ".did-gh-token"
+
+rich.traceback.install(suppress=[asyncio, httpx, httpx_cache, click], show_locals=True)
+
+
+def gh_token_issue(reason: str) -> None:
+    def out(*args: str) -> None:
+        rich.print(*args, file=sys.stderr)
+
+    out("[bold][red]GitHub token issue[/]:[/]", reason)
+    out()
+    out("To create a new token:")
+    out("1. Go and create a token at:")
+    out("   https://github.com/settings/tokens/new?description=did-{date.today()}")
+    out("2. Write the token in {TOKEN_FILE} and make sure it's not world-readable.")
+
 
 try:
-    GH_TOKEN = os.environ["GH_TOKEN"]
-except KeyError:
-    print("Generate a token at...", file=sys.stderr)
-    print(
-        f"https://github.com/settings/tokens/new?description=did-{date.today()}",
-        file=sys.stderr,
-    )
-    print("And run again with export GH_TOKEN=...", file=sys.stderr)
-    sys.exit(1)
+    GH_TOKEN = _TOKEN_FILE.read_text().strip()
+except OSError:
+    gh_token_issue(f"could not read token file ({_TOKEN_FILE})")
+    sys.exit(2)
+
 
 CACHE = httpx_cache.FileCache()
 MONTHS_TO_NUMBER = {
@@ -410,7 +426,13 @@ async def github(since: date, until: date):
 
 def main(*, since: date, until: date) -> None:
     print()
-    asyncio.run(github(since, until))
+    try:
+        asyncio.run(github(since, until))
+    except gidgethub.BadRequest:
+        rich.print(rich.traceback.Traceback(suppress=[asyncio]), file=sys.stderr)
+        gh_token_issue("Maybe the token expired? https://github.com/settings/tokens/")
+        sys.exit(1)
+
     local_git_projects(since, until, directory=os.path.expanduser("~/Developer"))
     local_git_projects(since, until, directory=os.path.expanduser("~/Developer/github"))
     discourse(since, until, host="discuss.python.org")
