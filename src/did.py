@@ -27,7 +27,17 @@ _DATE_FORMAT = "%Y-%m-%d"
 _DISCOURSE_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 _GH_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
-GH_TOKEN = os.environ["GH_TOKEN"]
+try:
+    GH_TOKEN = os.environ["GH_TOKEN"]
+except KeyError:
+    print("Generate a token at...", file=sys.stderr)
+    print(
+        f"https://github.com/settings/tokens/new?description=did-{date.today()}",
+        file=sys.stderr,
+    )
+    print("And run again with export GH_TOKEN=...", file=sys.stderr)
+    sys.exit(1)
+
 CACHE = httpx_cache.FileCache()
 MONTHS_TO_NUMBER = {
     month.lower(): index for index, month in enumerate(calendar.month_abbr) if month
