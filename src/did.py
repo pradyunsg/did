@@ -27,6 +27,7 @@ import httpx_cache
 import rich.traceback
 
 Period = Literal["week", "month", "quarter", "year"]
+_one_week_in_seconds = 60 * 60 * 24 * 7
 _DATE_FORMAT = "%Y-%m-%d"
 _DISCOURSE_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 _GH_DATETIME_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -148,7 +149,7 @@ def discourse(since: date, until: date, *, host: str) -> None:
     def get_bounded_user_actions():
         offset = 0
         client = httpx_cache.Client(
-            cache=CACHE, headers={"cache-control": "max-age=604800"}
+            cache=CACHE, headers={"cache-control": f"max-age={_one_week_in_seconds}"}
         )
         while True:
             print(f"<!-- offset: {offset} -->")
