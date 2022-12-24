@@ -17,7 +17,7 @@ import sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Literal, Tuple
+from typing import Literal
 
 import click
 import gidgethub
@@ -64,7 +64,7 @@ def days(n: int) -> timedelta:
     return timedelta(days=n)
 
 
-def get_this_period(today: date, period: Period) -> Tuple[str, date, date]:
+def get_this_period(today: date, period: Period) -> tuple[str, date, date]:
     if period == "week":
         start_date = today - days(today.weekday())
         period_ref = start_date.strftime("week %W of %Y")
@@ -95,7 +95,7 @@ def previous_quarter(ref: date) -> date:
     return date(ref.year, 9, 30)
 
 
-def get_last_period(today: date, period: Period) -> Tuple[str, date, date]:
+def get_last_period(today: date, period: Period) -> tuple[str, date, date]:
     if period == "week":
         end_date = today - days(today.weekday() + 1)
         start_date = end_date - days(6)
@@ -121,7 +121,7 @@ def get_last_period(today: date, period: Period) -> Tuple[str, date, date]:
     return period_ref, start_date, end_date
 
 
-def convert_to_range(period: str) -> Tuple[date, date]:
+def convert_to_range(period: str) -> tuple[date, date]:
     month_s, _, year_s = period.partition("-")
     assert (
         month_s in MONTHS_TO_NUMBER
