@@ -436,6 +436,7 @@ def main(*, since: date, until: date) -> None:
     local_git_projects(since, until, directory=os.path.expanduser("~/Developer"))
     local_git_projects(since, until, directory=os.path.expanduser("~/Developer/github"))
     discourse(since, until, host="discuss.python.org")
+    discourse(since, until, host="users.rust-lang.org")
 
 
 @click.group()
