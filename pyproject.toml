@@ -11,8 +11,9 @@ description = "A command line tool to help me figure out what all I've been upto
 dynamic = ["version"]
 readme = "README.md"
 
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 dependencies = [
+  "rich",
   "click",
   "gidgethub",
   "httpx",
