@@ -182,7 +182,7 @@ def discourse(since: date, until: date, *, host: str) -> None:
 
     total_liked = 0
     new_topics = []
-    replies_by_topic = defaultdict(int)
+    replies_by_topic: defaultdict[tuple[str, str], int] = defaultdict(int)
 
     for item in get_bounded_user_actions():
         action_type = item["action_type"]
@@ -196,7 +196,7 @@ def discourse(since: date, until: date, *, host: str) -> None:
 
     if new_topics:
         if len(new_topics) == 1:
-            print(f"Created 1 new topic:")
+            print("Created 1 new topic:")
         else:
             print(f"Created {len(new_topics)} new topics:")
         print()
@@ -218,7 +218,7 @@ def discourse(since: date, until: date, *, host: str) -> None:
         print()
 
     if total_liked == 1:
-        print(f"Liked 1 post.")
+        print("Liked 1 post.")
     else:
         print(f"Liked {total_liked} posts.")
 
