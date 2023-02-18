@@ -523,7 +523,7 @@ def on_(on: datetime):
 
 @did.command("in")
 @click.argument("period", metavar="date", type=str)
-def on_(period: str):
+def in_(period: str):
     """stats for given date"""
     since, until = convert_to_range(period)
 
