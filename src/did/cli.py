@@ -179,9 +179,9 @@ def on_(on: datetime):
 
 
 @did.command("in")
-@click.argument("period", metavar="date", type=str)
+@click.argument("month", type=str)
 def in_(period: str):
-    """stats for given date"""
+    """stats for given MMM-YYYY"""
     since, until = convert_to_range(period)
 
     print(f"# Log items for {period.capitalize()} ({since} to {until})")
