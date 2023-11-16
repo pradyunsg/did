@@ -188,6 +188,17 @@ def in_(period: str):
     main(since=since, until=until)
 
 
+@did.command("since")
+@click.argument("since", metavar="date", type=click.DateTime([_DATE_FORMAT]))
+def since_(since: datetime):
+    """stats starting from given date"""
+    since = since.date()
+    until = date.today()
+
+    print(f"# Log items since {since} (until {until}*)")
+    main(since=since, until=until)
+
+
 # -- Dispatch logic --------------------------------------------------------------------
 def main(*, since: date, until: date) -> None:
     configuration = load_configuration()
