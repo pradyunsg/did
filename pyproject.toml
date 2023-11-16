@@ -11,13 +11,15 @@ description = "A command line tool to help me figure out what all I've been upto
 dynamic = ["version"]
 readme = "README.md"
 
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
   "rich",
   "click",
   "gidgethub",
   "httpx",
   "httpx_cache",
+  "tomli",
+  "pydantic",
 ]
 
 license = { file = "LICENSE"}
@@ -26,8 +28,6 @@ authors = [
 ]
 classifiers = [
   "License :: OSI Approved :: MIT License",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
 ]
 
