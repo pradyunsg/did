@@ -87,6 +87,10 @@ def repository_from_repo_url(url: str) -> str:
     return "/".join(url.rsplit("/", 2)[-2:])
 
 
+def _log_entry(repo: str, text: str, *, url: str) -> None:
+    rich.print(f"- {escape(repo)} -- [link={url}]{escape(text)}[/]")
+
+
 async def _github_search(
     gh: GitHubAPI, config: GitHubSearchConfiguration, *, since: date, until: date
 ) -> None:
@@ -104,16 +108,17 @@ async def _github_search(
     item = None
     async for item in gh.getiter(url, dict(q=search_term)):
         if "commit" in item:
-            newline = "\n"
-            rich.print(
-                f"- {item['repository']['full_name']} --",
-                f"[link={item['html_url']}]{escape(item['commit']['message'].partition(newline)[0])}[/]",
+            _log_entry(
+                repo=item["repository"]["full_name"],
+                text=item["commit"]["message"].partition("\n")[0],
+                url=item["html_url"],
             )
         else:
             assert "title" in item
-            rich.print(
-                f"- {repository_from_repo_url(item['repository_url'])} --",
-                f"[link={item['html_url']}]{escape(item['title'])}[/]",
+            _log_entry(
+                repo=repository_from_repo_url(item["repository_url"]),
+                text=item["title"],
+                url=item["html_url"],
             )
     if item is None:
         print("Nothing.")
