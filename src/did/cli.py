@@ -180,11 +180,11 @@ def on_(on: datetime):
 
 @did.command("in")
 @click.argument("month", type=str)
-def in_(period: str):
+def in_(month: str):
     """stats for given MMM-YYYY"""
-    since, until = convert_to_range(period)
+    since, until = convert_to_range(month)
 
-    print(f"# Log items for {period.capitalize()} ({since} to {until})")
+    print(f"# Log items for {month.capitalize()} ({since} to {until})")
     main(since=since, until=until)
 
 
