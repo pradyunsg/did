@@ -9,6 +9,7 @@ import subprocess
 import sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import Literal
 
 import rich
@@ -61,7 +62,7 @@ class Stop(Exception):
 
 
 def load_configuration() -> Configuration:
-    with open("config.ignore.toml", "rb") as f:
+    with Path("~/.did/config.ignore.toml").expanduser().open("rb") as f:
         data = tomli.load(f)
 
     return Configuration.model_validate(data)
