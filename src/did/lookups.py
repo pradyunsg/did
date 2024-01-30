@@ -90,7 +90,7 @@ def repository_from_repo_url(url: str) -> str:
 
 
 def _log_entry(repo: str, text: str, *, url: str) -> None:
-    rich.print(f"- [link={url}]{escape(repo)}[/] -- {escape(text)}")
+    rich.print(f"- [blue bold link={url}]{escape(repo)}[/] -- {escape(text)}")
 
 
 async def _github_search(
@@ -111,14 +111,17 @@ async def _github_search(
     async for item in gh.getiter(url, dict(q=search_term)):
         if "commit" in item:
             _log_entry(
-                repo=item["repository"]["full_name"],
+                repo=f"{item['repository']['full_name']}@{item['sha'][:8]}",
                 text=item["commit"]["message"].partition("\n")[0],
                 url=item["html_url"],
             )
         else:
             assert "title" in item
+            repo = repository_from_repo_url(item["repository_url"])
+            if "number" in item:
+                repo += f"#{item['number']}"
             _log_entry(
-                repo=repository_from_repo_url(item["repository_url"]),
+                repo=repo,
                 text=item["title"],
                 url=item["html_url"],
             )
