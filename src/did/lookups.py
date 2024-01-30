@@ -88,7 +88,7 @@ def repository_from_repo_url(url: str) -> str:
 
 
 def _log_entry(repo: str, text: str, *, url: str) -> None:
-    rich.print(f"- {escape(repo)} -- [link={url}]{escape(text)}[/]")
+    rich.print(f"- [link={url}]{escape(repo)}[/] -- {escape(text)}")
 
 
 async def _github_search(
