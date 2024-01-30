@@ -46,6 +46,7 @@ class LocalGitConfiguration(BaseModel):
 
 class DiscourseConfiguration(BaseModel):
     instance: HttpUrl
+    username: str
 
 
 class Configuration(BaseModel):
@@ -338,7 +339,7 @@ async def lookup_discourse(
                 f"{config.instance}/user_actions.json",
                 params={
                     "offset": offset,
-                    "username": "pradyunsg",
+                    "username": config.username,
                     "filter": "1,4,5",
                 },
             )
