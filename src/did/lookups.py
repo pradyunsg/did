@@ -406,3 +406,5 @@ async def lookup_discourse(
         print("Liked 1 post.")
     else:
         print(f"Liked {total_liked} posts.")
+
+    print()
