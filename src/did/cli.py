@@ -80,17 +80,44 @@ def get_last_period(today: date, period: Period) -> tuple[str, date, date]:
 
 
 def convert_to_range(period: str) -> tuple[date, date]:
-    month_s, _, year_s = period.partition("-")
-    assert (
-        month_s in MONTHS_TO_NUMBER
-    ), f"expected a month name from {list(MONTHS_TO_NUMBER)}"
-    assert year_s.isnumeric(), "expected a number"
+    if len(period) == 4 and period.isnumeric():
+        year = int(period)
+        assert year > 2000
 
-    month = MONTHS_TO_NUMBER[month_s]
-    year = int(year_s)
-    _, month_days_count = calendar.monthrange(year=year, month=month)
+        _, last_year_day = calendar.monthrange(year=year, month=12)
+        return date(year, 1, 1), date(year, 12, last_year_day)
 
-    return date(year, month, 1), date(year, month, month_days_count)
+    if len(period) == 7 and period.lower().startswith("q") and "-" in period:
+        quarter, _, year = period.partition("-")
+        quarter = quarter.lower()
+        assert quarter in {"q1", "q2", "q3", "q4"}, "expected quarter number"
+        assert year.isnumeric(), "expected a number"
+
+        quarter_n = int(quarter[1])
+        year_n = int(year)
+
+        first_qmonth = (3 * (quarter_n - 1)) + 1
+        last_qmonth = 3 * quarter_n
+        _, last_qday = calendar.monthrange(year=year_n, month=last_qmonth)
+        return (
+            date(year=year_n, month=first_qmonth, day=1),
+            date(year=year_n, month=last_qmonth, day=last_qday),
+        )
+
+    if len(period) == 8 and "-" in period:
+        month, _, year = period.partition("-")
+        assert (
+            month in MONTHS_TO_NUMBER
+        ), f"expected a month name from {list(MONTHS_TO_NUMBER)}"
+        assert year.isnumeric(), "expected a number"
+
+        month_n = MONTHS_TO_NUMBER[month]
+        year_n = int(year)
+        _, month_days_count = calendar.monthrange(year=year_n, month=month_n)
+
+        return date(year_n, month_n, 1), date(year_n, month_n, month_days_count)
+
+    assert False, "Expected period to be YYYY or MMM-YYYY or Q{N}-YYYY"
 
 
 # -- Logic for dispatching lookups -----------------------------------------------------
@@ -179,12 +206,12 @@ def on_(on: datetime):
 
 
 @did.command("in")
-@click.argument("month", type=str)
-def in_(month: str):
+@click.argument("period", type=str)
+def in_(period: str):
     """stats for given MMM-YYYY"""
-    since, until = convert_to_range(month)
+    since, until = convert_to_range(period)
 
-    print(f"# Log items for {month.capitalize()} ({since} to {until})")
+    print(f"# Log items for {period.capitalize()} ({since} to {until})")
     main(since=since, until=until)
 
 
