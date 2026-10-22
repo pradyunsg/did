@@ -33,7 +33,7 @@ def get_this_period(today: date, period: Period) -> tuple[str, date, date]:
         quarter_number = (today.month - 1) // 3
         quarter_start_month = quarter_number * 3 + 1
         start_date = date(today.year, quarter_start_month, 1)
-        period_ref = start_date.strftime(f"Q{quarter_number+1} %Y")
+        period_ref = start_date.strftime(f"Q{quarter_number + 1} %Y")
     elif period == "year":
         start_date = date(today.year, 1, 1)
         period_ref = start_date.strftime("%Y")
@@ -106,9 +106,9 @@ def convert_to_range(period: str) -> tuple[date, date]:
 
     if len(period) == 8 and "-" in period:
         month, _, year = period.partition("-")
-        assert (
-            month in MONTHS_TO_NUMBER
-        ), f"expected a month name from {list(MONTHS_TO_NUMBER)}"
+        assert month in MONTHS_TO_NUMBER, (
+            f"expected a month name from {list(MONTHS_TO_NUMBER)}"
+        )
         assert year.isnumeric(), "expected a number"
 
         month_n = MONTHS_TO_NUMBER[month]
